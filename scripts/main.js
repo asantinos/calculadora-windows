@@ -2,162 +2,169 @@ document.addEventListener("DOMContentLoaded", function () {
   // Get all the elements (keys and displays)
   const resultDisplay = document.getElementById("resultDisplay");
   const operationDisplay = document.getElementById("operationDisplay");
-  const keys = document.querySelectorAll(".key");
+
+  const numbers = document.querySelectorAll(".number");
+  const operations = document.querySelectorAll(".operator");
+  const equalKey = document.getElementById("equal");
+  const pi = document.getElementById("pi");
+  const clear = document.getElementById("clear");
+  const deleteLast = document.getElementById("delete-last");
+
   const inverseKey = document.getElementById("inverse");
   const squareKey = document.getElementById("square");
   const rootKey = document.getElementById("square-root");
 
   // Define both values with its operator
+  let operator = "";
   let currentValue = "";
   let previousValue = "";
-  let operator = "";
   let resultValue = "";
 
-  // Inverse key function
-  inverseKey.addEventListener("click", function () {
-    resultValue = 1 / currentValue;
-    displayValue = resultValue;
+  // Display number when key is clicked
+  numbers.forEach(function (number) {
+    number.addEventListener("click", function () {
+      displayValue = number.textContent;
+
+      if (operationDisplay.textContent === "0" && operator === "") {
+        operationDisplay.textContent = displayValue;
+        previousValue = operationDisplay.textContent;
+      } else if (operator === "") {
+        operationDisplay.textContent += displayValue;
+        previousValue = operationDisplay.textContent;
+      } else if (operator !== "") {
+        operationDisplay.textContent += displayValue;
+        currentValue += displayValue;
+      }
+      console.log(previousValue);
+      console.log(currentValue);
+    });
+  });
+
+  operations.forEach(function (operation) {
+    operation.addEventListener("click", function () {
+      if (operator !== "" && previousValue !== "") {
+        operationDisplay.textContent =
+          operationDisplay.textContent.slice(0, -1) + operation.textContent;
+        operator = operation.textContent;
+        console.log(operator);
+      } else if (previousValue !== "") {
+        operator = operation.textContent;
+        operationDisplay.textContent += operation.textContent;
+        console.log(operator);
+      }
+    });
+  });
+
+  equalKey.addEventListener("click", function () {
+    const num1 = parseFloat(previousValue);
+    const num2 = parseFloat(currentValue);
+
+    switch (operator) {
+      case "+":
+        resultValue = num1 + num2;
+        break;
+      case "-":
+        resultValue = num1 - num2;
+        break;
+      case "x":
+        resultValue = num1 * num2;
+        break;
+      case "÷":
+        if (num2 !== 0) {
+          resultValue = num1 / num2;
+        } else {
+          resultDisplay.textContent = "Error";
+          return;
+        }
+        break;
+      default:
+        if (operationDisplay.textContent === "0") {
+          resultDisplay.textContent = "0";
+        } else {
+          resultDisplay.textContent = "Error";
+        }
+        return;
+    }
+
+    // Actualiza el resultado en el elemento deseado, por ejemplo, "operationDisplay"
+    resultDisplay.textContent = resultValue;
+    operationDisplay.textContent = resultValue;
+
+    // Actualiza "previousValue" con el resultado para posibles operaciones posteriores
+    previousValue = resultValue;
+
+    // Limpia "currentValue" y "operator" para futuros cálculos
+    currentValue = "";
+    operator = "";
+  });
+
+  pi.addEventListener("click", function () {
+    if (previousValue === "" && operator === "") {
+      previousValue = Math.PI;
+      operationDisplay.textContent = previousValue;
+    } else if (currentValue !== "" && operator !== "" && currentValue === "") {
+      currentValue = Math.PI;
+      operationDisplay.textContent += previousValue;
+    }
+    console.log(previousValue);
+    console.log(currentValue);
+  });
+
+  clear.addEventListener("click", function () {
+    previousValue = "";
+    currentValue = "";
+    operator = "";
     operationDisplay.textContent = "0";
+    resultDisplay.textContent = "0";
+  });
+
+  // !! CONTROL ERRORS WHEN OPERATOR IS NOT EMPTY !!
+  deleteLast.addEventListener("click", function () {
+    let currentDisplay = operationDisplay.textContent;
+
+    if (currentDisplay.length > 1 && operator === "") {
+      currentDisplay = currentDisplay.slice(0, -1);
+      previousValue = currentDisplay;
+    } else if (operator !== "") {
+      currentDisplay = "0";
+      currentValue = "";
+      previousValue = "";
+    }
+    console.log(previousValue);
+
+    operationDisplay.textContent = currentDisplay;
+  });
+
+  inverseKey.addEventListener("click", function () {
+    if (operator === "") {
+      resultValue = 1 / previousValue;
+      previousValue = resultValue;
+      operationDisplay.textContent = previousValue || "0";
+      resultDisplay.textContent = previousValue || "0";
+    } else {
+      resultDisplay.textContent = "Error";
+    }
   });
 
   squareKey.addEventListener("click", function () {
-    resultValue = Math.pow(currentValue, 2);
-    displayValue = resultValue;
-    operationDisplay.textContent = displayValue || "0";
+    if (operator === "") {
+      resultValue = Math.pow(previousValue, 2);
+      previousValue = resultValue;
+      operationDisplay.textContent = previousValue || "0";
+      resultDisplay.textContent = previousValue || "0";
+    } else {
+      resultDisplay.textContent = "Error";
+    }
   });
 
   rootKey.addEventListener("click", function () {
-    resultValue = Math.sqrt(currentValue);
-    displayValue = resultValue;
-    operationDisplay.textContent = displayValue || "0";
-  });
-
-  function updateOperationDisplay() {
-    // Set display value to typed number
-    let displayValue = currentValue;
-
-    // Show the values and operator in the display
-    if (operator) {
-      displayValue = `${previousValue} ${operator} ${currentValue}`;
+    if (operator === "") {
+      resultValue = Math.sqrt(previousValue);
+      previousValue = resultValue;
+      operationDisplay.textContent = previousValue || "0";
+      resultDisplay.textContent = previousValue || "0";
+    } else {
+      resultDisplay.textContent = "Error";
     }
-
-    // Show the result or 0 if there is no operator
-    operationDisplay.textContent = displayValue || "0";
-  }
-
-  function updateResultDisplay() {
-    // Show the typed number in the display
-    let displayValue = resultValue;
-
-    // Show the result or 0 if there is no operator
-    resultDisplay.textContent = displayValue || "0";
-  }
-
-  keys.forEach(function (key) {
-    key.addEventListener("click", function () {
-      const keyValue = key.textContent;
-
-      switch (keyValue) {
-        case "%":
-          break;
-        case "π":
-          currentValue = Math.PI;
-          break;
-        case "C":
-          // Delete both display and operation
-          currentValue = "";
-          previousValue = "";
-          operator = "";
-          resultValue = "";
-          break;
-        case "⬅":
-          // Delate last digit on display
-          currentValue = currentValue.slice(0, -1);
-          break;
-        case "+/-":
-          // Change sign (+/-) on display
-          currentValue = (-parseFloat(currentValue)).toString();
-          break;
-        case "=":
-          // Make operation
-          if (previousValue !== "") {
-            switch (operator) {
-              case "+":
-                resultValue = (
-                  parseFloat(previousValue) + parseFloat(currentValue)
-                ).toString();
-                currentValue = resultValue;
-                break;
-              case "-":
-                resultValue = (
-                  parseFloat(previousValue) - parseFloat(currentValue)
-                ).toString();
-                currentValue = resultValue;
-
-                break;
-              case "x":
-                resultValue = (
-                  parseFloat(previousValue) * parseFloat(currentValue)
-                ).toString();
-                currentValue = resultValue;
-
-                break;
-              case "÷":
-                resultValue = (
-                  parseFloat(previousValue) / parseFloat(currentValue)
-                ).toString();
-                currentValue = resultValue;
-
-                break;
-            }
-            operator = "";
-            previousValue = "";
-          }
-          break;
-        default:
-          // Error management
-          if (!isNaN(keyValue) || keyValue === ".") {
-            currentValue += keyValue;
-          } else {
-            if (previousValue !== "") {
-              // Make operation
-              switch (operator) {
-                case "+":
-                  currentValue = (
-                    parseFloat(previousValue) + parseFloat(currentValue)
-                  ).toString();
-                  break;
-                case "-":
-                  currentValue = (
-                    parseFloat(previousValue) - parseFloat(currentValue)
-                  ).toString();
-                  break;
-                case "x":
-                  currentValue = (
-                    parseFloat(previousValue) * parseFloat(currentValue)
-                  ).toString();
-                  break;
-                case "÷":
-                  currentValue = (
-                    parseFloat(previousValue) / parseFloat(currentValue)
-                  ).toString();
-                  break;
-              }
-              previousValue = currentValue;
-              currentValue = "";
-              operator = keyValue;
-            } else {
-              // Set operator
-              operator = keyValue;
-              previousValue = currentValue;
-              currentValue = "";
-            }
-          }
-          break;
-      }
-
-      updateOperationDisplay();
-      updateResultDisplay();
-    });
   });
 });
