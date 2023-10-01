@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: url("/assets/wallpaper.jpg");
+  background-size: cover;
+  color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.layout {
+  width: 320px;
+  background-color: #242526ee;
+  backdrop-filter: blur(5px);
+  border: 1px solid #313131;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.action-btn {
+  display: flex;
+  gap: 20px;
+}
+
+.windowbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history {
+  cursor: pointer;
+  border-radius: 50px;
+  padding: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #18191a;
+  }
+}
+
+h1 {
+  font-size: 0.8em;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 1.4em;
+  font-weight: 500;
+}
+
+.operation-display {
+  width: 100%;
+  font-weight: 300;
+  text-align: right;
+  padding: 10px;
+  overflow-y: scroll;
+}
+
+.result-display {
+  width: 100%;
+  font-size: 2.8em;
+  font-weight: 500;
+  text-align: right;
+  padding: 0 10px 15px 10px;
+  overflow-y: scroll;
+}
+
+.keys-layout {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.key {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #454545;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    filter: brightness(0.8);
+  }
+}
+
+.darker {
+  background-color: #313131;
+}
+
+.equal {
+  background-color: rgb(114, 169, 214);
+  color: #000;
+}
+
+.icon {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 40px;
+  left: 30px;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  img {
+    width: 80px;
+  }
+
+  &:hover {
+    background-color: rgba(58, 130, 172, 0.329);
+  }
+}
