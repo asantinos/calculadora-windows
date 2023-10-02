@@ -1,3 +1,5 @@
+// GITHUB REPOSITORIE: https://github.com/asantinos/calculadora-windows
+
 document.addEventListener("DOMContentLoaded", function () {
   // Get all the elements (keys and displays)
   const resultDisplay = document.getElementById("resultDisplay");
@@ -10,17 +12,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const clear = document.getElementById("clear");
   const deleteLast = document.getElementById("delete-last");
 
+  const percentageKey = document.getElementById("percentage");
   const inverseKey = document.getElementById("inverse");
   const squareKey = document.getElementById("square");
   const rootKey = document.getElementById("square-root");
+  const negativeKey = document.getElementById("negative");
 
-  // Define both values with its operator
+  // Define both values with its operator and the result value
   let operator = "";
   let currentValue = "";
   let previousValue = "";
   let resultValue = "";
 
-  // Display number when key is clicked
+  // Assign values to operate with and display them when keys are clicked
   numbers.forEach(function (number) {
     number.addEventListener("click", function () {
       displayValue = number.textContent;
@@ -35,26 +39,24 @@ document.addEventListener("DOMContentLoaded", function () {
         operationDisplay.textContent += displayValue;
         currentValue += displayValue;
       }
-      console.log(previousValue);
-      console.log(currentValue);
     });
   });
 
+  // Assign operator and display value when key is clicked
   operations.forEach(function (operation) {
     operation.addEventListener("click", function () {
       if (operator !== "" && previousValue !== "") {
         operationDisplay.textContent =
           operationDisplay.textContent.slice(0, -1) + operation.textContent;
         operator = operation.textContent;
-        console.log(operator);
       } else if (previousValue !== "") {
         operator = operation.textContent;
         operationDisplay.textContent += operation.textContent;
-        console.log(operator);
       }
     });
   });
 
+  // Make the operation with the values and operator selected
   equalKey.addEventListener("click", function () {
     const num1 = parseFloat(previousValue);
     const num2 = parseFloat(currentValue);
@@ -87,32 +89,62 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    addToHistory();
-
-    // Actualiza el resultado en el elemento deseado, por ejemplo, "operationDisplay"
+    // Update both displays to show the result
+    // Add operation with result to history
     resultDisplay.textContent = resultValue;
+    addToHistory();
     operationDisplay.textContent = resultValue;
 
-    // Actualiza "previousValue" con el resultado para posibles operaciones posteriores
+    // Assign the result to the new previous value
     previousValue = resultValue;
 
-    // Limpia "currentValue" y "operator" para futuros cálculos
+    // Reset current value and operator
     currentValue = "";
     operator = "";
   });
 
+  // Change sign of number (positive or negative)
+  // Control when to change it to the previous or current value
+  negativeKey.addEventListener("click", function () {
+    if (previousValue !== "" && operator === "") {
+      previousValue = -previousValue;
+      operationDisplay.textContent = previousValue;
+    } else if (operator !== "" && currentValue !== "") {
+      currentValue = -currentValue;
+      const expressionBeforeOperator =
+        operationDisplay.textContent.split(operator)[0];
+      operationDisplay.textContent =
+        expressionBeforeOperator + operator + currentValue;
+    }
+  });
+
+  // Divide value of previous or current value by 100
+  percentageKey.addEventListener("click", function () {
+    if (previousValue !== "" && operator === "") {
+      previousValue = previousValue / 100;
+      operationDisplay.textContent = previousValue;
+    } else if (operator !== "" && currentValue !== "") {
+      currentValue = currentValue / 100;
+      const expressionBeforeOperator =
+        operationDisplay.textContent.split(operator)[0];
+      operationDisplay.textContent =
+        expressionBeforeOperator + operator + currentValue;
+    }
+  });
+
+  // Assign PI value to previous or current value
   pi.addEventListener("click", function () {
     if (previousValue === "" && operator === "") {
       previousValue = Math.PI;
       operationDisplay.textContent = previousValue;
     } else if (operator !== "" && currentValue === "") {
       currentValue = Math.PI;
-      operationDisplay.textContent += previousValue;
+      operationDisplay.textContent += currentValue;
     }
-    console.log(previousValue);
-    console.log(currentValue);
   });
 
+  // DELETE KEYS //
+  // Delete and reset all values and operator
   clear.addEventListener("click", function () {
     previousValue = "";
     currentValue = "";
@@ -121,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
     resultDisplay.textContent = "0";
   });
 
+  // Delete last number from the display and update the value
   deleteLast.addEventListener("click", function () {
     let currentDisplay = operationDisplay.textContent;
 
@@ -137,10 +170,13 @@ document.addEventListener("DOMContentLoaded", function () {
       previousValue = "";
     }
     console.log(previousValue);
+    console.log(currentValue);
 
     operationDisplay.textContent = currentDisplay;
   });
 
+  // ONLY PREVIOUS VALUE OPERATIONS //
+  // Divide 1 by the previous value
   inverseKey.addEventListener("click", function () {
     if (operator === "") {
       resultValue = 1 / previousValue;
@@ -152,6 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Square of the previous value
   squareKey.addEventListener("click", function () {
     if (operator === "") {
       resultValue = Math.pow(previousValue, 2);
@@ -163,6 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Root square of the previous value
   rootKey.addEventListener("click", function () {
     if (operator === "") {
       resultValue = Math.sqrt(previousValue);
@@ -174,7 +212,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // TOGGLE SHOW HISTORY BUTTON
+
+  // HISTORY //
+  // Toggle show/hide history
   const toggleHistoryButton = document.getElementById("toggle-history");
 
   const historyContainer = document.querySelector(".history-container");
@@ -188,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // ADD TO HISTORY
+  // Add operation to the history
   function addToHistory() {
     const operationText = operationDisplay.textContent;
     const resultText = resultDisplay.textContent;
