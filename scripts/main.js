@@ -1,4 +1,10 @@
-// GITHUB REPOSITORIE: https://github.com/asantinos/calculadora-windows
+/**
+ * @author asantinos
+ * @version 1.0.0
+ * Created on 2020-03-10
+ * Github respositorie: https://github.com/asantinos/calculadora-windows
+ * 
+ */
 
 document.addEventListener("DOMContentLoaded", function () {
   // Get all the elements (keys and displays)
