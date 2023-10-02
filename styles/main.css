@@ -8,8 +8,7 @@ body {
   background: url("/assets/wallpaper.jpg");
   background-size: cover;
   color: #fff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .container {
@@ -48,12 +47,12 @@ body {
 
 .history {
   cursor: pointer;
-  border-radius: 50px;
+  border-radius: 10px;
   padding: 6px;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #18191a;
+    background-color: #353639;
   }
 }
 
@@ -73,7 +72,7 @@ h2 {
   font-weight: 300;
   text-align: right;
   padding: 10px;
-  overflow-y: scroll;
+  overflow-x: auto;
 }
 
 .result-display {
@@ -82,10 +81,11 @@ h2 {
   font-weight: 500;
   text-align: right;
   padding: 0 10px 15px 10px;
-  overflow-y: scroll;
+  overflow-x: auto;
 }
 
 .keys-layout {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 5px;
@@ -130,11 +130,64 @@ h2 {
   border-radius: 10px;
   cursor: pointer;
 
-  img {
-    width: 80px;
-  }
-
   &:hover {
     background-color: rgba(58, 130, 172, 0.329);
+  }
+}
+
+.icon img {
+  width: 80px;
+}
+
+.history-container {
+  pointer-events: none;
+  height: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: inherit;
+  padding: 20px;
+  background-color: #1f2022;
+  transition: all 0.3s ease;
+}
+.history-container.visible {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-end;
+  overflow-y: auto;
+  gap: 20px;
+  pointer-events: all;
+  opacity: 1;
+  height: 330px;
+  max-height: 330px;
+}
+
+.history-data {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.history-result {
+  font-size: 1.8em;
+}
+
+.delete-history {
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 6px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #353639;
   }
 }

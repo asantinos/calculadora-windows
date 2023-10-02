@@ -77,14 +77,17 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         break;
-      default:
+      default: {
         if (operationDisplay.textContent === "0") {
           resultDisplay.textContent = "0";
         } else {
           resultDisplay.textContent = "Error";
         }
         return;
+      }
     }
+
+    addToHistory();
 
     // Actualiza el resultado en el elemento deseado, por ejemplo, "operationDisplay"
     resultDisplay.textContent = resultValue;
@@ -102,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (previousValue === "" && operator === "") {
       previousValue = Math.PI;
       operationDisplay.textContent = previousValue;
-    } else if (currentValue !== "" && operator !== "" && currentValue === "") {
+    } else if (operator !== "" && currentValue === "") {
       currentValue = Math.PI;
       operationDisplay.textContent += previousValue;
     }
@@ -118,13 +121,16 @@ document.addEventListener("DOMContentLoaded", function () {
     resultDisplay.textContent = "0";
   });
 
-  // !! CONTROL ERRORS WHEN OPERATOR IS NOT EMPTY !!
   deleteLast.addEventListener("click", function () {
     let currentDisplay = operationDisplay.textContent;
 
     if (currentDisplay.length > 1 && operator === "") {
       currentDisplay = currentDisplay.slice(0, -1);
       previousValue = currentDisplay;
+    } else if (currentDisplay.length === 1 && operator === "") {
+      currentDisplay = "0";
+      currentValue = "";
+      previousValue = "";
     } else if (operator !== "") {
       currentDisplay = "0";
       currentValue = "";
@@ -167,4 +173,42 @@ document.addEventListener("DOMContentLoaded", function () {
       resultDisplay.textContent = "Error";
     }
   });
+
+  // TOGGLE SHOW HISTORY BUTTON
+  const toggleHistoryButton = document.getElementById("toggle-history");
+
+  const historyContainer = document.querySelector(".history-container");
+  toggleHistoryButton.addEventListener("click", function () {
+    const isHistoryVisible = historyContainer.classList.contains("visible");
+
+    if (isHistoryVisible) {
+      historyContainer.classList.remove("visible");
+    } else {
+      historyContainer.classList.add("visible");
+    }
+  });
+
+  // ADD TO HISTORY
+  function addToHistory() {
+    const operationText = operationDisplay.textContent;
+    const resultText = resultDisplay.textContent;
+
+    if (operationText !== " && " && resultText !== "") {
+      const historyItem = document.createElement("div");
+      historyItem.innerHTML = `
+        <div class="history-data">
+          <span>${operationText}</span>
+          <span class="history-result">${resultText}</span>
+        </div>
+        `;
+      historyContainer.appendChild(historyItem);
+
+      const deleteHistory = document.getElementById("delete-history");
+      deleteHistory.addEventListener("click", function () {
+        while (historyContainer.childNodes.length > 2) {
+          historyContainer.removeChild(historyContainer.lastChild);
+        }
+      });
+    }
+  }
 });
