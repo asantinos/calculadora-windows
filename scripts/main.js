@@ -3,7 +3,7 @@
  * @version 1.0.0
  * Created on 2020-03-10
  * Github respositorie: https://github.com/asantinos/calculadora-windows
- * 
+ *
  */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -29,15 +29,20 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentValue = "";
   let previousValue = "";
   let resultValue = "";
+  let isNewOperation = true;
 
   // Assign values to operate with and display them when keys are clicked
   numbers.forEach(function (number) {
     number.addEventListener("click", function () {
       displayValue = number.textContent;
 
-      if (operationDisplay.textContent === "0" && operator === "") {
+      if (
+        (operationDisplay.textContent === "0" && operator === "") ||
+        isNewOperation
+      ) {
         operationDisplay.textContent = displayValue;
         previousValue = operationDisplay.textContent;
+        isNewOperation = false;
       } else if (operator === "") {
         operationDisplay.textContent += displayValue;
         previousValue = operationDisplay.textContent;
@@ -59,6 +64,8 @@ document.addEventListener("DOMContentLoaded", function () {
         operator = operation.textContent;
         operationDisplay.textContent += operation.textContent;
       }
+      // After an opeation, if the person click on an operation key, new operation will be false
+      isNewOperation = false;
     });
   });
 
@@ -67,32 +74,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const num1 = parseFloat(previousValue);
     const num2 = parseFloat(currentValue);
 
-    switch (operator) {
-      case "+":
-        resultValue = num1 + num2;
-        break;
-      case "-":
-        resultValue = num1 - num2;
-        break;
-      case "x":
-        resultValue = num1 * num2;
-        break;
-      case "÷":
-        if (num2 !== 0) {
-          resultValue = num1 / num2;
-        } else {
-          resultDisplay.textContent = "Error";
+    if (!isNaN(num1) && !isNaN(num2) && operator !== "") {
+      switch (operator) {
+        case "+":
+          resultValue = num1 + num2;
+          break;
+        case "-":
+          resultValue = num1 - num2;
+          break;
+        case "x":
+          resultValue = num1 * num2;
+          break;
+        case "÷":
+          if (num2 !== 0) {
+            resultValue = num1 / num2;
+          } else {
+            resultValue = "Error";
+          }
+          break;
+        default: {
+          if (operationDisplay.textContent === "0") {
+            resultValue = "0";
+          } else {
+            resultValue = num1;
+          }
           return;
         }
-        break;
-      default: {
-        if (operationDisplay.textContent === "0") {
-          resultDisplay.textContent = "0";
-        } else {
-          resultDisplay.textContent = "Error";
-        }
-        return;
       }
+      // If user inserts previous value and operator but not current value
+    } else if (!isNaN(num1) && operator !== "") {
+      resultValue = "Error";
+      // If user only inserts previous value
+    } else if (!isNaN(num1) && operator === "") {
+      resultValue = num1;
+      // If user not insert any value
+    } else {
+      resultValue = "0";
     }
 
     // Update both displays to show the result
@@ -107,6 +124,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Reset current value and operator
     currentValue = "";
     operator = "";
+
+    // Set new operation to true
+    isNewOperation = true;
   });
 
   // Change sign of number (positive or negative)
@@ -217,7 +237,6 @@ document.addEventListener("DOMContentLoaded", function () {
       resultDisplay.textContent = "Error";
     }
   });
-
 
   // HISTORY //
   // Toggle show/hide history
