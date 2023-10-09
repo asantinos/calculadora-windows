@@ -186,17 +186,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (currentDisplay.length > 1 && operator === "") {
       currentDisplay = currentDisplay.slice(0, -1);
       previousValue = currentDisplay;
-    } else if (currentDisplay.length === 1 && operator === "") {
+    } else if (
+      (currentDisplay.length === 1 && operator === "") ||
+      operator !== ""
+    ) {
       currentDisplay = "0";
-      currentValue = "";
       previousValue = "";
-    } else if (operator !== "") {
-      currentDisplay = "0";
       currentValue = "";
-      previousValue = "";
+      isNewOperation = true;
     }
-    console.log(previousValue);
-    console.log(currentValue);
 
     operationDisplay.textContent = currentDisplay;
   });
