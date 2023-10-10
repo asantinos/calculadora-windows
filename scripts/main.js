@@ -242,13 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const historyContainer = document.querySelector(".history-container");
   toggleHistoryButton.addEventListener("click", function () {
-    const isHistoryVisible = historyContainer.classList.contains("visible");
-
-    if (isHistoryVisible) {
-      historyContainer.classList.remove("visible");
-    } else {
-      historyContainer.classList.add("visible");
-    }
+    
+    historyContainer.classList.toggle("visible");
   });
 
   // Add operation to the history
